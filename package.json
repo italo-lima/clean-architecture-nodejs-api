@@ -5,13 +5,19 @@
   "repository": "git@github.com:italo-lima/clean-architecture-nodejs-api.git",
   "author": "Ítalo Lima <italojonas@hotmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "jest --watchAll",
+    "test:staged": "jest"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  },
   "devDependencies": {
     "husky": "^4.3.0",
     "jest": "^26.4.2",
     "lint-staged": "^10.4.0",
     "standard": "^14.3.4"
-  },
-  "scripts": {
-    "test": "jest"
   }
 }
