@@ -1,18 +1,5 @@
-class LoginRouter {
-  route (httpRequest) {
-    if (!httpRequest || !httpRequest.body) {
-      return {
-        statusCode: 500
-      }
-    }
-    const { email, password } = httpRequest.body
-    if (!email || !password) {
-      return {
-        statusCode: 400
-      }
-    }
-  }
-}
+const LoginRouter = require('./login-router')
+const MissingParamError = require('../helpers/missing-param-errors')
 
 describe('Login Router', () => {
   test('should return 400 if no email is provided', () => {
@@ -23,7 +10,8 @@ describe('Login Router', () => {
       }
     }
     const httpResponse = sut.route(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.statusCode).toEqual(400)
+    expect(httpResponse.body).toEqual(new MissingParamError('email'))
   })
 
   test('should return 400 if no password is provided', () => {
@@ -35,6 +23,7 @@ describe('Login Router', () => {
     }
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new MissingParamError('password'))
   })
 
   test('should return 500 if httpRequest is provided', () => {
