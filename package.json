@@ -4,5 +4,25 @@
   "main": "index.js",
   "repository": "git@github.com:italo-lima/clean-architecture-nodejs-api.git",
   "author": "Ítalo Lima <italojonas@hotmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "lint-staged": {
+    "*.js": [
+      "standard --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "devDependencies": {
+    "husky": "^4.3.0",
+    "jest": "^26.4.2",
+    "lint-staged": "^10.4.0",
+    "standard": "^14.3.4"
+  },
+  "scripts": {
+    "test": "jest"
+  }
 }
