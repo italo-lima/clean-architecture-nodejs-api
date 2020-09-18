@@ -1,0 +1,8 @@
+{
+  "name": "clean-architecture-nodejs-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:italo-lima/clean-architecture-nodejs-api.git",
+  "author": "Ítalo Lima <italojonas@hotmail.com>",
+  "license": "MIT"
+}
