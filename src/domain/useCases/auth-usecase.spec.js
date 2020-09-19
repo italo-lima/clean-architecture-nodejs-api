@@ -1,24 +1,5 @@
 const { MissingParamError, InvalidParamError } = require('../../utils/errors')
-
-class AuthUseCase {
-  constructor (loadUserByEmailRepository) {
-    this.loadUserByEmailRepository = loadUserByEmailRepository
-  }
-
-  async auth (email, password) {
-    if (!email) {
-      throw new MissingParamError('email')
-    } else if (!password) {
-      throw new MissingParamError('password')
-    } else if (!this.loadUserByEmailRepository) {
-      throw new MissingParamError('loadUserByEmailRepository')
-    } else if (!this.loadUserByEmailRepository.load) {
-      throw new InvalidParamError('loadUserByEmailRepository')
-    }
-
-    await this.loadUserByEmailRepository.load(email)
-  }
-}
+const AuthUseCase = require('./auth-usecase')
 
 const makeSut = () => {
   class LoadUserByEmailRepository {
@@ -70,5 +51,12 @@ describe('Auth UseCase', () => {
     const promise = sut.auth('valid_email@email.com', 'valid_password')
 
     expect(promise).rejects.toThrow(new InvalidParamError('loadUserByEmailRepository'))
+  })
+
+  test('Should return null if LoadUserByEmailRepository reuturns null', async () => {
+    const { sut } = makeSut()
+    const accessToken = await sut.auth('invalid_email@email.com', 'invalid_password')
+
+    expect(accessToken).toBeNull()
   })
 })
