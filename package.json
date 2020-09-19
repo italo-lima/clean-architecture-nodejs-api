@@ -6,8 +6,9 @@
   "author": "Ítalo Lima <italojonas@hotmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest --watchAll",
-    "test:staged": "jest --passWithNoTests"
+    "test": "jest --watch --silent",
+    "test:staged": "jest --passWithNoTests --findRelatedTests --silent",
+    "test:ci": "jest --coverage"
   },
   "standard": {
     "env": [
