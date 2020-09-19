@@ -19,6 +19,7 @@ module.exports = class AuthUseCase {
       return null
     }
 
+    await this.encrypter.compare(password, user.password)
     return null
   }
 }
