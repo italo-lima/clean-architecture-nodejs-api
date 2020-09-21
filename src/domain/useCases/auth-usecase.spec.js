@@ -44,19 +44,34 @@ const makeTokenGeneratorSpy = () => {
   return tokenGeneratorSpy
 }
 
+const makeUpdateAccessTokenRepositorySpy = () => {
+  class UpdateAccessTokenRepositorySpy {
+    async update (userId, accessToken) {
+      this.userId = userId
+      this.accessToken = accessToken
+      // return this.accessToken
+    }
+  }
+  const updateAccessTokenRepositorySpy = new UpdateAccessTokenRepositorySpy()
+
+  return updateAccessTokenRepositorySpy
+}
+
 const makeSut = () => {
   const encrypterSpy = makeEncrypter()
   const loadUserByEmailRepositorySpy = makeLoadUserByEmailRepositorySpy()
   const tokenGeneratorSpy = makeTokenGeneratorSpy()
+  const updateAccessTokenRepositorySpy = makeUpdateAccessTokenRepositorySpy()
 
   const sut = new AuthUseCase({
     loadUserByEmailRepository: loadUserByEmailRepositorySpy,
     encrypter: encrypterSpy,
-    tokenGenerator: tokenGeneratorSpy
+    tokenGenerator: tokenGeneratorSpy,
+    updateAccessTokenRepository: updateAccessTokenRepositorySpy
   })
 
   return {
-    sut, loadUserByEmailRepositorySpy, encrypterSpy, tokenGeneratorSpy
+    sut, loadUserByEmailRepositorySpy, encrypterSpy, tokenGeneratorSpy, updateAccessTokenRepositorySpy
   }
 }
 
@@ -72,7 +87,7 @@ const makeLoadUserByEmailRepositoryWithError = () => {
 
 const makeEncrypterWithError = () => {
   class EncrypterSpy {
-    async compare (password, hashedPassword) {
+    async compare () {
       throw new Error()
     }
   }
@@ -143,7 +158,14 @@ describe('Auth UseCase', () => {
     expect(accessToken).toBeTruthy()
   })
 
-  test('Should throw if no dependencies are provided', async () => {
+  test('Should call UpdateAccessTokenRepository with correct values', async () => {
+    const { sut, loadUserByEmailRepositorySpy, updateAccessTokenRepositorySpy, tokenGeneratorSpy } = makeSut()
+    await sut.auth('valid_email@email.com', 'valid_password')
+    expect(updateAccessTokenRepositorySpy.userId).toBe(loadUserByEmailRepositorySpy.user.id)
+    expect(updateAccessTokenRepositorySpy.accessToken).toBe(tokenGeneratorSpy.accessToken)
+  })
+
+  test('Should throw if invalid dependencies are provided', async () => {
     const loadUserByEmailRepository = makeLoadUserByEmailRepositorySpy()
     const encrypter = makeEncrypter()
     const suts = [].concat(
