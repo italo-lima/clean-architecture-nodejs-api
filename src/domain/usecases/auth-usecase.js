@@ -11,18 +11,17 @@ module.exports = class AuthUseCase {
   async auth (email, password) {
     if (!email) {
       throw new MissingParamError('email')
-    } else if (!password) {
+    }
+    if (!password) {
       throw new MissingParamError('password')
     }
-
     const user = await this.loadUserByEmailRepository.load(email)
-
-    if (user && await this.encrypter.compare(password, user.password)) {
-      const accessToken = await this.tokenGenerator.generate(user.id)
-      await this.updateAccessTokenRepository.update(user.id, accessToken)
+    const isValid = user && await this.encrypter.compare(password, user.password)
+    if (isValid) {
+      const accessToken = await this.tokenGenerator.generate(user._id)
+      await this.updateAccessTokenRepository.update(user._id, accessToken)
       return accessToken
     }
-
     return null
   }
 }

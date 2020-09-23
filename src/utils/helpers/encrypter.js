@@ -1,16 +1,15 @@
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const MissingParamError = require('../errors/missing-param-error')
 
 module.exports = class Encrypter {
-  async compare (password, hashedPassword) {
-    if (!password) {
-      throw new MissingParamError('password')
-    } else if (!hashedPassword) {
-      throw new MissingParamError('hashedPassword')
+  async compare (value, hash) {
+    if (!value) {
+      throw new MissingParamError('value')
     }
-
-    const isValid = bcrypt.compare(password, hashedPassword)
-
+    if (!hash) {
+      throw new MissingParamError('hash')
+    }
+    const isValid = await bcrypt.compare(value, hash)
     return isValid
   }
 }
